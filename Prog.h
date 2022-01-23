@@ -11,7 +11,6 @@ std::string time02 = "";
 std::string time03 = "";
 std::string time04 = "";
 std::string time05 = "";
-
 void Draw(HDC hdc){
 
     Rectangle(hdc, 10, 19, 225, 100);
@@ -43,6 +42,10 @@ void Draw(HDC hdc){
 
 }
 void Draw01(HDC hdc){
+time05 = time04;
+time04 = time03;
+time03 = time02;
+time02 = time01;
     switch(flag10){
     case 3:
             SYSTEMTIME czas;
@@ -69,7 +72,12 @@ void Draw01(HDC hdc){
 
             SetBkMode(hdc, TRANSPARENT);
             TextOut(hdc, 20, 130, tekst, strlen(tekst));
-            std::string time01 = tekst;
+
+            TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
+            TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
+            TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
+            TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
+            //std::string time01 = tekst;
 
             //TextOut(hdc, 20, 150, showSN.c_str(), strlen(showSN.c_str()));
 
@@ -88,7 +96,8 @@ bool fileExists(const std::string& fileName){
     plikBL.close();
     return false;
 }
-void logSave(std::string logTime, std::string logSN){
+//void logSave(std::string logTime, std::string logSN){
+void logSave(std::string logSN){
 
     SYSTEMTIME timeSave;
     GetLocalTime(&timeSave);
@@ -113,7 +122,8 @@ void logSave(std::string logTime, std::string logSN){
     std::fstream fileLog;
     fileLog.open(strTimeSave, std::ios_base::out | std::ios::app);
     if(fileLog.is_open()){
-        fileLog<<logTime<<" "<<logSN<<std::endl;
+        //fileLog<<logTime<<" "<<logSN<<std::endl;
+        fileLog<<time01<<" "<<logSN<<std::endl;
         fileLog.close();
     }
     fileLog.close();
