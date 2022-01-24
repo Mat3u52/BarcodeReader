@@ -7,11 +7,8 @@
 #include <windows.h>
 #include <fstream>
 
-#include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#include <ctime>
 
 #include <cstdlib>
 
@@ -21,8 +18,9 @@
 
 #include <filesystem>
 
-namespace fs = std::filesystem;
 using namespace std;
+namespace fs = filesystem;
+
 void killProcessByName(const char *filename);
 bool pathValidator(string &pathToValid);
 
@@ -31,16 +29,6 @@ int main(){
 //					HINSTANCE hPrevInstance,
 //					LPTSTR    lpCmdLine,
 //					int       nCmdShow){
-//-----------Only one instance--------------------------------------
-	HANDLE hMutex = CreateMutex( NULL, FALSE, "RnWMutex" );
-	if( hMutex && GetLastError() != 0 ){
-		//MessageBox( NULL, "The app already exists.",
-		//	"HotShot", MB_ICONEXCLAMATION );
-		PostQuitMessage( 0 );
-		return 0;
-	}
-
-//-----------Only one instance / the end------------------------------
     bool flagRename = "false";
     bool flagIncoming = "false"; /// <-- add
     char file[] = "SMEMASignal1.txt";
@@ -51,44 +39,61 @@ int main(){
 
     int synchronize = 0; /// <-- add
 
-    for(;;){
-    //cout<<synchronize<<endl;
-        int amount = 0;
-        time_t czas;
-        time( & czas );
-        strftime(tCurrent, 100, "%Y%m%d%H%M%S", localtime( & czas ));
+//-----------Only one instance--------------------------------------
+	HANDLE hMutex = CreateMutex( NULL, FALSE, "RnWMutex" );
+	if( hMutex && GetLastError() != 0 ){
+		PostQuitMessage( 0 );
+		return 0;
+	}
+//-----------Only one instance / The End------------------------------
+//------------initialize---------------------------------------
+    int amountTemp = 0;
+    for(const auto& entry : fs::directory_iterator("C:\\Defects\\ComportSignal\\")){ ///source
+        const auto filenameStr0 = entry.path().filename().string();
+        if(entry.is_regular_file()){
+            amountTemp++;
+            if(amountTemp>1){
+                string pathToRemove0 = "C:\\Defects\\ComportSignal\\"+filenameStr0;
+                fs::remove(pathToRemove0);
+            }
+        }
+    }
+    string pathToFile0 = "C:\\Defects\\BuyOffControl.exe";
+    if(pathValidator(pathToFile0) == true){
+        fs::rename("C:\\Defects\\BuyOffControl.exe", "C:\\Defects\\BuyOffControl1.exe");
+    }
+//-----------------The End initialize---------------------
 
+    for(;;){
+        //cout<<synchronize<<endl;
+        int amount = 0;
+        time_t timeCurrent;
+        time(& timeCurrent);
+        strftime(tCurrent, 100, "%Y%m%d%H%M%S", localtime(& timeCurrent));
         //cout << tCurrent << endl;
 
         if(!stat(file, & b)){
-            //strftime(t, 100, "%d%m%Y%H%M%S", localtime(& b.st_mtime));
             strftime(t, 100, "%Y%m%d%H%M%S", localtime(& b.st_mtime));
             int tInt = atoi(t);
             int tCurrentInt = atoi(tCurrent);
             //cout << tCurrentInt << " " << tInt << endl;
-            if(tCurrentInt == tInt ){
+            if(tCurrentInt == tInt){
                 //cout << "OK" << endl;
+                char buffer[64];
+                time_t timeTM;
+                time(& timeTM);
+                tm timeTM0 = * localtime(& timeTM);
 
+                setlocale(LC_ALL, "English");
+                strftime(buffer, sizeof(buffer), "%c", & timeTM0);
+                //printf( "[Zawartosc bufora]: \"%s\"\n", bufor );
 
+                string dateTime = buffer;
+                //cout << dateTime << endl;
 
-    char bufor[ 64 ];
-    time_t czas;
-    time( & czas );
-    tm czasTM = * localtime( & czas );
-
-    setlocale( LC_ALL, "English" );
-    strftime( bufor, sizeof( bufor ), "%c", & czasTM );
-    //printf( "[Zawartosc bufora]: \"%s\"\n", bufor );
-
-    string dateTime = bufor;
-    //cout << dateTime << endl;
-
-
-fstream handle;
-string recipe;
-
-handle.open("C:\\cpi\\data\\names.txt");
-//handle.open("names.txt"); // at home
+                fstream handle;
+                string recipe;
+                handle.open("C:\\cpi\\data\\names.txt");
 
 if(handle.good()==false){
     exit(0);
@@ -119,11 +124,6 @@ handleB.close();
                 //Sleep(500);
 
 if(barcode.length() > 6 && barcode.length() < 20){
-
-//flagIncoming = true; /// <-- add
-//if(synchronize<=1){ /// <-- add
-//    synchronize++; /// <-- add
-//}
 
 if(barcode.compare("NOREAD") != 0){
     fstream plik;
@@ -177,36 +177,21 @@ clearFile.close();
 
 
 
-
-
-
-
 for(const auto& entry : fs::directory_iterator("C:\\Defects\\ComportSignal\\")){ ///source
-        const auto filenameStr = entry.path().filename().string();
-            if(entry.is_directory()){
-                cout << "dir:  " << filenameStr << '\n';
-                //i++;
-                //int filenameInt = atoi(filenameStr.c_str());
-                //i = filenameInt;
-
-            }else if (entry.is_regular_file()){
-                //cout << "file: " << filenameStr << '\n';
-                amount++;
-                if(amount>1){
-                    //cout << "to remove" << endl;
-                    string pathToRemove = "C:\\Defects\\ComportSignal\\"+filenameStr;
-                    flagRename = true;
-                    Sleep(500);
-                    fs::remove(pathToRemove);
-
-                    //if(synchronize>=1){
-                    //    synchronize--; /// <-- add
-                    //}
-                }
-            }else{
-                cout << "?? "<< filenameStr << '\n';
-            }
+    const auto filenameStr = entry.path().filename().string();
+    if(entry.is_regular_file()){
+        //cout << "file: " << filenameStr << '\n';
+        amount++;
+        if(amount>1){
+            //cout << "to remove" << endl;
+            string pathToRemove = "C:\\Defects\\ComportSignal\\"+filenameStr;
+            flagRename = true;
+            Sleep(500);
+            fs::remove(pathToRemove);
+        }
+    }
 }
+
     if(flagRename == true){
         string pathToFile = "C:\\Defects\\BuyOffControl.exe";
         if(pathValidator(pathToFile) == true){
@@ -260,14 +245,11 @@ void killProcessByName(const char *filename){
     PROCESSENTRY32 pEntry;
     pEntry.dwSize = sizeof (pEntry);
     BOOL hRes = Process32First(hSnapShot, &pEntry);
-    while (hRes)
-    {
-        if (strcmp(pEntry.szExeFile, filename) == 0)
-        {
+    while(hRes){
+        if(strcmp(pEntry.szExeFile, filename) == 0){
             HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
                                           (DWORD) pEntry.th32ProcessID);
-            if (hProcess != NULL)
-            {
+            if(hProcess != NULL){
                 TerminateProcess(hProcess, 9);
                 CloseHandle(hProcess);
             }
