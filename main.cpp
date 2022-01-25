@@ -1068,6 +1068,10 @@ flagSync = true;
             //TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
             //TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
             //TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
+            TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
+            TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
+            TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
+            TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
 
         }
         //Draw01(hdc);
