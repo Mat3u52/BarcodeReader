@@ -6,11 +6,7 @@
 int flag;
 int flag10;
 RECT rect;
-std::string time01 = "";
-std::string time02 = "";
-std::string time03 = "";
-std::string time04 = "";
-std::string time05 = "";
+
 void Draw(HDC hdc){
 
     Rectangle(hdc, 10, 19, 225, 100);
@@ -41,11 +37,8 @@ void Draw(HDC hdc){
     }
 
 }
-void Draw01(HDC hdc){
-time05 = time04;
-time04 = time03;
-time03 = time02;
-time02 = time01;
+//void Draw01(HDC hdc){
+std::string Draw01(){
     switch(flag10){
     case 3:
             SYSTEMTIME czas;
@@ -70,15 +63,11 @@ time02 = time01;
             if(czas.wSecond<10) strcat(tekst, "0");
                 strcat(tekst, tab);
 
-            SetBkMode(hdc, TRANSPARENT);
-            TextOut(hdc, 20, 130, tekst, strlen(tekst));
+            //SetBkMode(hdc, TRANSPARENT);
+            //TextOut(hdc, 20, 130, tekst, strlen(tekst));
 
-            TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
-            TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
-            TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
-            TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
             //std::string time01 = tekst;
-
+            return tekst;
             //TextOut(hdc, 20, 150, showSN.c_str(), strlen(showSN.c_str()));
 
             //InvalidateRect(NULL, NULL, FALSE);
@@ -123,7 +112,7 @@ void logSave(std::string logSN){
     fileLog.open(strTimeSave, std::ios_base::out | std::ios::app);
     if(fileLog.is_open()){
         //fileLog<<logTime<<" "<<logSN<<std::endl;
-        fileLog<<time01<<" "<<logSN<<std::endl;
+        fileLog<<" "<<logSN<<std::endl;
         fileLog.close();
     }
     fileLog.close();

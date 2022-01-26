@@ -49,6 +49,12 @@ string showSN02 = "";
 string showSN03 = "";
 string showSN04 = "";
 
+string time01 = "";
+string time02 = "";
+string time03 = "";
+string time04 = "";
+string time05 = "";
+
 fstream plik;
 
 bool endOfFile0 = false;
@@ -205,6 +211,11 @@ rect0[1].bottom = 330;
                         showSN03 = showSN02;
                         showSN02 = showSN01;
                         showSN01 = showSN;
+
+                        time05 = time04;
+                        time04 = time03;
+                        time03 = time02;
+                        time02 = time01;
 
                         logSave(showSN);
 
@@ -780,6 +791,7 @@ rect0[1].bottom = 330;
                 endOfFile1 = true;
 
             if(flag01 == 0 ){
+                time01 = Draw01();
                 InvalidateRect(hWnd, &rect0[0], true);
                 flag10 = 3;
                 flag01 = 1;
@@ -1056,18 +1068,14 @@ flagSync = true;
 
         if(endOfFile0 == true){//ok true
             //InvalidateRect(hWnd, &rect0[0], FALSE);
-            Draw01(hdc);
+           // Draw01(hdc);
             TextOut(hdc, 90, 130, showSN.c_str(), strlen(showSN.c_str()));
             TextOut(hdc, 90, 150, showSN01.c_str(), strlen(showSN01.c_str()));
             TextOut(hdc, 90, 170, showSN02.c_str(), strlen(showSN02.c_str()));
             TextOut(hdc, 90, 190, showSN03.c_str(), strlen(showSN03.c_str()));
             TextOut(hdc, 90, 210, showSN04.c_str(), strlen(showSN04.c_str()));
 
-            //TextOut(hdc, 20, 130, time01.c_str(), strlen(time01.c_str()));
-            //TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
-            //TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
-            //TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
-            //TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
+            TextOut(hdc, 20, 130, time01.c_str(), strlen(time01.c_str()));
             TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
             TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
             TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
