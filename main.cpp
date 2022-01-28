@@ -212,10 +212,7 @@ rect0[1].bottom = 330;
                         showSN02 = showSN01;
                         showSN01 = showSN;
 
-                        time05 = time04;
-                        time04 = time03;
-                        time03 = time02;
-                        time02 = time01;
+
 
                         logSave(showSN);
 
@@ -791,7 +788,6 @@ rect0[1].bottom = 330;
                 endOfFile1 = true;
 
             if(flag01 == 0 ){
-                time01 = Draw01();
                 InvalidateRect(hWnd, &rect0[0], true);
                 flag10 = 3;
                 flag01 = 1;
@@ -1074,6 +1070,35 @@ flagSync = true;
             TextOut(hdc, 90, 170, showSN02.c_str(), strlen(showSN02.c_str()));
             TextOut(hdc, 90, 190, showSN03.c_str(), strlen(showSN03.c_str()));
             TextOut(hdc, 90, 210, showSN04.c_str(), strlen(showSN04.c_str()));
+
+            time05 = time04;
+            time04 = time03;
+            time03 = time02;
+            time02 = time01;
+
+
+            SYSTEMTIME czas00;
+            char tab[32];
+            char tekst[128];
+
+            SYSTEMTIME st;
+            GetLocalTime(&czas00);
+            if(czas00.wHour<10){
+                strcpy(tekst, "0");
+                itoa(czas00.wHour, tab, 10);
+                strcat(tekst, tab);
+            }else{
+                itoa(czas00.wHour, tekst, 10);
+            }
+            strcat(tekst, ":");
+            itoa(czas00.wMinute, tab, 10);
+            if(czas00.wMinute<10) strcat(tekst, "0");
+                strcat(tekst, tab);
+                itoa(czas00.wSecond, tab, 10);
+                strcat(tekst, ":");
+            if(czas00.wSecond<10) strcat(tekst, "0");
+                strcat(tekst, tab);
+                time01 = tekst;
 
             TextOut(hdc, 20, 130, time01.c_str(), strlen(time01.c_str()));
             TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
