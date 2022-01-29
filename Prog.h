@@ -107,12 +107,32 @@ void logSave(std::string logSN){
     strTimeSave += bufferLog;
     strTimeSave += ".txt";
 
+    SYSTEMTIME czas000;
+    char tab000[32];
+    char tekst000[128];
+
+    GetLocalTime(&czas000);
+            if(czas000.wHour<10){
+                strcpy(tekst000, "0");
+                itoa(czas000.wHour, tab000, 10);
+                strcat(tekst000, tab000);
+            }else{
+                itoa(czas000.wHour, tekst000, 10);
+            }
+            strcat(tekst000, ":");
+            itoa(czas000.wMinute, tab000, 10);
+            if(czas000.wMinute<10) strcat(tekst000, "0");
+                strcat(tekst000, tab000);
+                itoa(czas000.wSecond, tab000, 10);
+                strcat(tekst000, ":");
+            if(czas000.wSecond<10) strcat(tekst000, "0");
+                strcat(tekst000, tab000);
 
     std::fstream fileLog;
     fileLog.open(strTimeSave, std::ios_base::out | std::ios::app);
     if(fileLog.is_open()){
         //fileLog<<logTime<<" "<<logSN<<std::endl;
-        fileLog<<" "<<logSN<<std::endl;
+        fileLog<<tekst000<<" "<<logSN<<std::endl;
         fileLog.close();
     }
     fileLog.close();

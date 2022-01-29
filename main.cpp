@@ -1081,7 +1081,7 @@ flagSync = true;
             char tab[32];
             char tekst[128];
 
-            SYSTEMTIME st;
+            //SYSTEMTIME st;
             GetLocalTime(&czas00);
             if(czas00.wHour<10){
                 strcpy(tekst, "0");
