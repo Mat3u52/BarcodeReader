@@ -30,6 +30,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+
 using namespace std;
 
 const WORD ID_TIMER = 3001;
@@ -65,6 +66,8 @@ bool flagBLExist = false;
 bool flagBLExistDraw = false;
 
 bool flagSync = false;
+
+void killProcessByName(const char *filename);
 
 int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nShowCmd ){
     WNDCLASSEX winc1;
@@ -789,7 +792,7 @@ rect0[1].bottom = 330;
 
             if(flag01 == 0 ){
                 InvalidateRect(hWnd, &rect0[0], true);
-                flag10 = 3;
+                //flag10 = 3;
                 flag01 = 1;
 
 //---------------Notification for pcb-------------
@@ -1037,8 +1040,10 @@ flagSync = true;
                     MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
             break;
             case IDB_BUTTON3:
-                //flag = 3;
-                //InvalidateRect(hWnd, &rect, FALSE);
+
+                //killProcessByName("CalculatorApp.exe");
+                killProcessByName("BuyOffControl.exe");
+
                 fstream fileTemp;
                 fileTemp.open("C:\\Defects\\ComportSignal\\temp.txt", std::ios_base::out | std::ios::app);
                     if(fileTemp.is_open()){
@@ -1047,7 +1052,6 @@ flagSync = true;
                     }
                     fileTemp.close();
 
-                   // MessageBox(NULL, "PCB", "Release", MB_ICONERROR);
             break;
         }
         break;
