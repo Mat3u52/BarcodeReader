@@ -1,21 +1,16 @@
 #include <iostream>
-
 #include <ctime>
 #include <cstdio>
 #include <clocale>
 #include <string>
 #include <windows.h>
 #include <fstream>
-
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #include <cstdlib>
-
 #include <process.h>
 #include <Tlhelp32.h>
 #include <winbase.h>
-
 #include <filesystem>
 
 using namespace std;
@@ -25,19 +20,13 @@ void killProcessByName(const char *filename);
 bool pathValidator(string &pathToValid);
 
 int main(){
-//int WinMain(HINSTANCE hInstance,
-//					HINSTANCE hPrevInstance,
-//					LPTSTR    lpCmdLine,
-//					int       nCmdShow){
     bool flagRename = "false";
-    bool flagIncoming = "false"; /// <-- add
+    bool flagIncoming = "false";
     char file[] = "SMEMASignal1.txt";
-
     char t[100] = "";
     struct stat b;
     char tCurrent[100] = "";
-
-    int synchronize = 0; /// <-- add
+    int synchronize = 0;
 
 //-----------Only one instance--------------------------------------
 	HANDLE hMutex = CreateMutex( NULL, FALSE, "RnWMutex" );
@@ -46,7 +35,7 @@ int main(){
 		return 0;
 	}
 //-----------Only one instance / The End------------------------------
-//------------initialize---------------------------------------
+//-------------------initialize---------------------------------------
     int amountTemp = 0;
     for(const auto& entry : fs::directory_iterator("C:\\Defects\\ComportSignal\\")){ ///source
         const auto filenameStr0 = entry.path().filename().string();
@@ -62,7 +51,7 @@ int main(){
     if(pathValidator(pathToFile0) == true){
         fs::rename("C:\\Defects\\BuyOffControl.exe", "C:\\Defects\\BuyOffControl1.exe");
     }
-//-----------------The End initialize---------------------
+//-----------------The End initialize-------------------------------
 
     for(;;){
         //cout<<synchronize<<endl;
@@ -71,7 +60,6 @@ int main(){
         time(& timeCurrent);
         strftime(tCurrent, 100, "%Y%m%d%H%M%S", localtime(& timeCurrent));
         //cout << tCurrent << endl;
-
         if(!stat(file, & b)){
             strftime(t, 100, "%Y%m%d%H%M%S", localtime(& b.st_mtime));
             int tInt = atoi(t);
@@ -86,157 +74,120 @@ int main(){
 
                 setlocale(LC_ALL, "English");
                 strftime(buffer, sizeof(buffer), "%c", & timeTM0);
-                //printf( "[Zawartosc bufora]: \"%s\"\n", bufor );
-
                 string dateTime = buffer;
                 //cout << dateTime << endl;
-
                 fstream handle;
                 string recipe;
                 handle.open("C:\\cpi\\data\\names.txt");
 
-if(handle.good()==false){
-    exit(0);
-}else{
-    getline(handle, recipe);
-}
-handle.close();
-    int recipeL = recipe.length();
-    recipe.erase(recipeL-4,4);
-    recipe.erase(0,2);
-    //cout << recipe << endl;
+                if(handle.good()==false){
+                    exit(0);
+                }else{
+                    getline(handle, recipe);
+                }
 
-fstream handleB;
-string barcode;
+                handle.close();
+                int recipeL = recipe.length();
+                recipe.erase(recipeL-4,4);
+                recipe.erase(0,2);
+                //cout << recipe << endl;
+                fstream handleB;
+                string barcode;
 
-handleB.open("barcode001.txt");
+                handleB.open("barcode001.txt");
 
-if(handleB.good()==false){
-    exit(0);
-}else{
-    getline(handleB, barcode);
-}
-handleB.close();
+                if(handleB.good()==false){
+                    exit(0);
+                }else{
+                    getline(handleB, barcode);
+                }
+                handleB.close();
+                //cout << barcode << endl;
 
-//cout << barcode << endl;
+                if(barcode.length() > 6 && barcode.length() < 20){
+                    if(barcode.compare("NOREAD") != 0){
+                        fstream plik;
+                        plik.open("barcodelist.bar", ios::out);
+                        plik<<"#Board: ";
+                        plik<<recipe<<", ";
+                        plik<<dateTime<<"\n";
+                        plik<<"\n#Number Of Panel	Barcode\n";
+                        plik<<"Barcode#1	*"<<barcode<<"\n";
+                        plik<<"#End";
+                        plik.close();
 
-                //Sleep(2000);
-                //Sleep(500);
-
-if(barcode.length() > 6 && barcode.length() < 20){
-
-if(barcode.compare("NOREAD") != 0){
-    fstream plik;
-    plik.open("barcodelist.bar", ios::out);
-    plik<<"#Board: ";
-    plik<<recipe<<", ";
-    plik<<dateTime<<"\n";
-    plik<<"\n#Number Of Panel	Barcode\n";
-    plik<<"Barcode#1	*"<<barcode<<"\n";
-    plik<<"#End";
-    plik.close();
-
-
-if(barcode.compare("Barcode0") != 0){
-    flagIncoming = true; /// <-- add
-    if(synchronize<=1){ /// <-- add
-        synchronize++; /// <-- add
-    }
-}
-
-}else{
-    fstream plik;
-    plik.open("barcodelist.bar", ios::out);
-    plik<<"#Board: ";
-    plik<<recipe<<", ";
-    plik<<dateTime<<"\n";
-    plik<<"\n#Number Of Panel	Barcode\n";
-    plik<<"Barcode#1	*Barcode0\n";
-    plik<<"#End";
-    plik.close();
-}
-                Sleep(500); // in work
-                //Sleep(1000); // in work
-                //Sleep(20000);
-}else{
-killProcessByName("Mondelbrot.exe");
-Sleep(2000);
-ShellExecute(NULL, "open", "Mandelbrot.exe", NULL, NULL, 0);
-}
-//----Start clear barcode001 file
-fstream clearFile;
-clearFile.open("barcode001.txt", ios::out);
-clearFile<<"NOREAD";
-clearFile.close();
-//----The end clesr file
-
+                        if(barcode.compare("Barcode0") != 0){
+                            flagIncoming = true;
+                            if(synchronize<=1){
+                                synchronize++;
+                            }
+                        }
+                    }else{
+                        fstream plik;
+                        plik.open("barcodelist.bar", ios::out);
+                        plik<<"#Board: ";
+                        plik<<recipe<<", ";
+                        plik<<dateTime<<"\n";
+                        plik<<"\n#Number Of Panel	Barcode\n";
+                        plik<<"Barcode#1	*Barcode0\n";
+                        plik<<"#End";
+                        plik.close();
+                    }
+                    Sleep(500);
+                }else{
+                    killProcessByName("Mondelbrot.exe");
+                    Sleep(2000);
+                    ShellExecute(NULL, "open", "Mandelbrot.exe", NULL, NULL, 0);
+                }
+                //----Start clear barcode001 file
+                fstream clearFile;
+                clearFile.open("barcode001.txt", ios::out);
+                clearFile<<"NOREAD";
+                clearFile.close();
+                //----The end clesr file
             }
+        }
+        for(const auto& entry : fs::directory_iterator("C:\\Defects\\ComportSignal\\")){ ///source
+            const auto filenameStr = entry.path().filename().string();
+            if(entry.is_regular_file()){
+                //cout << "file: " << filenameStr << '\n';
+                amount++;
+                if(amount>1){
+                    //cout << "to remove" << endl;
+                    string pathToRemove = "C:\\Defects\\ComportSignal\\"+filenameStr;
+                    flagRename = true;
+                    Sleep(500);
+                    fs::remove(pathToRemove);
+                }
+            }
+        }
+
+        if(flagRename == true){
+            string pathToFile = "C:\\Defects\\BuyOffControl.exe";
+            if(pathValidator(pathToFile) == true){
+                Sleep(500);
+                    fs::rename("C:\\Defects\\BuyOffControl.exe", "C:\\Defects\\BuyOffControl1.exe");
+                Sleep(500);
+            }
+            flagRename = false;
+
+            if(synchronize>=1){
+                synchronize--;
+            }
+        }
+
+        if(flagIncoming == true && synchronize == 2){
+            string pathToFile1 = "C:\\Defects\\BuyOffControl1.exe";
+            if(pathValidator(pathToFile1) == true){
+                Sleep(500);
+                fs::rename("C:\\Defects\\BuyOffControl1.exe", "C:\\Defects\\BuyOffControl.exe"); /// turn on the Bye Off Control
+                Sleep(500);
+            }
+            flagIncoming = false;
         }else{
-            printf("Lack of the source to file. \n");
-        }
-
-
-
-for(const auto& entry : fs::directory_iterator("C:\\Defects\\ComportSignal\\")){ ///source
-    const auto filenameStr = entry.path().filename().string();
-    if(entry.is_regular_file()){
-        //cout << "file: " << filenameStr << '\n';
-        amount++;
-        if(amount>1){
-            //cout << "to remove" << endl;
-            string pathToRemove = "C:\\Defects\\ComportSignal\\"+filenameStr;
-            flagRename = true;
-            Sleep(500);
-            fs::remove(pathToRemove);
+            flagIncoming = false;
         }
     }
-}
-
-    if(flagRename == true){
-        string pathToFile = "C:\\Defects\\BuyOffControl.exe";
-        if(pathValidator(pathToFile) == true){
-            Sleep(500);
-            fs::rename("C:\\Defects\\BuyOffControl.exe", "C:\\Defects\\BuyOffControl1.exe");
-            Sleep(500);
-        }
-        flagRename = false;
-
-        if(synchronize>=1){
-            synchronize--; /// <-- add
-        }
-
-        //Sleep(3000); /// <-- add
-    }
-    //else{ /// <-- add
-    //    flagRename = false; /// <-- add
-   // }
-
-    if(flagIncoming == true && synchronize == 2){ /// <-- add
-        string pathToFile1 = "C:\\Defects\\BuyOffControl1.exe";
-        if(pathValidator(pathToFile1) == true){
-            Sleep(500);
-            fs::rename("C:\\Defects\\BuyOffControl1.exe", "C:\\Defects\\BuyOffControl.exe"); /// turn on the Bye Off Control
-            Sleep(500);
-        }
-        //flagRename = false;
-        flagIncoming = false; /// <-- add
-    }else{ /// <--  add
-        flagIncoming = false; /// <-- add
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
     return 0;
 }
 

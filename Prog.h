@@ -3,8 +3,12 @@
 #define IDB_BUTTON3 1002
 #define PRODUCT_NAME "mandelbrot"
 
+#include <process.h>
+#include <Tlhelp32.h>
+#include <winbase.h>
+
 int flag;
-int flag10;
+//int flag10;
 RECT rect;
 
 void Draw(HDC hdc){
@@ -37,6 +41,7 @@ void Draw(HDC hdc){
     }
 
 }
+/*
 //void Draw01(HDC hdc){
 std::string Draw01(){
     switch(flag10){
@@ -75,6 +80,7 @@ std::string Draw01(){
     }
 
 }
+*/
 bool fileExists(const std::string& fileName){
     std::fstream plikBL;
     plikBL.open(fileName.c_str(), std::ios::in); //| std::ios::nocreate
@@ -112,21 +118,21 @@ void logSave(std::string logSN){
     char tekst000[128];
 
     GetLocalTime(&czas000);
-            if(czas000.wHour<10){
-                strcpy(tekst000, "0");
-                itoa(czas000.wHour, tab000, 10);
-                strcat(tekst000, tab000);
-            }else{
-                itoa(czas000.wHour, tekst000, 10);
-            }
+        if(czas000.wHour<10){
+            strcpy(tekst000, "0");
+            itoa(czas000.wHour, tab000, 10);
+            strcat(tekst000, tab000);
+        }else{
+            itoa(czas000.wHour, tekst000, 10);
+        }
+        strcat(tekst000, ":");
+        itoa(czas000.wMinute, tab000, 10);
+        if(czas000.wMinute<10) strcat(tekst000, "0");
+            strcat(tekst000, tab000);
+            itoa(czas000.wSecond, tab000, 10);
             strcat(tekst000, ":");
-            itoa(czas000.wMinute, tab000, 10);
-            if(czas000.wMinute<10) strcat(tekst000, "0");
-                strcat(tekst000, tab000);
-                itoa(czas000.wSecond, tab000, 10);
-                strcat(tekst000, ":");
-            if(czas000.wSecond<10) strcat(tekst000, "0");
-                strcat(tekst000, tab000);
+        if(czas000.wSecond<10) strcat(tekst000, "0");
+            strcat(tekst000, tab000);
 
     std::fstream fileLog;
     fileLog.open(strTimeSave, std::ios_base::out | std::ios::app);
@@ -136,4 +142,22 @@ void logSave(std::string logSN){
         fileLog.close();
     }
     fileLog.close();
+}
+void killProcessByName(const char *filename){
+    HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
+    PROCESSENTRY32 pEntry;
+    pEntry.dwSize = sizeof (pEntry);
+    BOOL hRes = Process32First(hSnapShot, &pEntry);
+    while(hRes){
+        if(strcmp(pEntry.szExeFile, filename) == 0){
+            HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0,
+                                          (DWORD) pEntry.th32ProcessID);
+            if(hProcess != NULL){
+                TerminateProcess(hProcess, 9);
+                CloseHandle(hProcess);
+            }
+        }
+        hRes = Process32Next(hSnapShot, &pEntry);
+    }
+    CloseHandle(hSnapShot);
 }
