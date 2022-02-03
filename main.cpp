@@ -215,6 +215,11 @@ rect0[1].bottom = 330;
                         showSN02 = showSN01;
                         showSN01 = showSN;
 
+                        time05 = time04;
+                        time04 = time03;
+                        time03 = time02;
+                        time02 = time01;
+
 
 
                         logSave(showSN);
@@ -1075,10 +1080,10 @@ flagSync = true;
             TextOut(hdc, 90, 190, showSN03.c_str(), strlen(showSN03.c_str()));
             TextOut(hdc, 90, 210, showSN04.c_str(), strlen(showSN04.c_str()));
 
-            time05 = time04;
-            time04 = time03;
-            time03 = time02;
-            time02 = time01;
+//            time05 = time04;
+//            time04 = time03;
+//            time03 = time02;
+//            time02 = time01;
 
 
             SYSTEMTIME czas00;
