@@ -43,7 +43,7 @@ char tabw[4], tabr;
 LPSTR buf;
 LRESULT CALLBACK WinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 int dlugos;
-COMSTAT statsread; //status
+COMSTAT statsread;
 string showSN = "";
 string showSN01 = "";
 string showSN02 = "";
@@ -117,7 +117,7 @@ int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
         MB_ICONERROR);
     }
 
-    HWND hWnd = CreateWindowEx( NULL,
+    HWND hWnd = CreateWindowEx(NULL,
     "Window Class",
     "COM 10",
     //WS_OVERLAPPEDWINDOW,
@@ -129,7 +129,7 @@ int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
     HWND_DESKTOP,
     NULL,
     hTInst,
-    NULL );
+    NULL);
 
     if(!hWnd){
         int nResult = GetLastError();
@@ -140,16 +140,15 @@ int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
     }
 
 //----Tray------------------------------------------------
-
     LPSTR sTip = "COM 10";
-    LPSTR sTytul = "Communications Port (COM10)"; //add
-    LPSTR sOpis = "I am ready to intercept."; //add
+    LPSTR sTytul = "Communications Port (COM10)";
+    LPSTR sOpis = "I am ready to intercept.";
     NOTIFYICONDATA nid;
 
     nid.cbSize = sizeof(NOTIFYICONDATA);
     nid.hWnd = hWnd;
     nid.uID = ID_TRAY1;
-    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | NIF_INFO; // add NIF_INFO
+    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | NIF_INFO;
     nid.uCallbackMessage = CMSG_TRAY1;
     nid.hIcon = LoadIcon(NULL, IDI_INFORMATION);
     nid.dwInfoFlags = NIIF_INFO; // add
@@ -160,11 +159,9 @@ int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
     BOOL r;
     r = Shell_NotifyIcon(NIM_ADD, & nid);
     if(!r) MessageBox(hWnd, "No way, No icon...", "Leeee...", MB_ICONEXCLAMATION);
-
 //---the end tray---------------------------------------
 
-    //ShowWindow( hWnd, nShowCmd ); // hidden window
-    ShowWindow(hWnd, SW_HIDE); // hidden window
+    ShowWindow(hWnd, SW_HIDE);
 
     MSG msg;
     ZeroMemory(& msg, sizeof(MSG));
@@ -195,43 +192,37 @@ rect0[1].bottom = 330;
     switch(msg){
         case WM_TIMER:
             {
-            ClearCommError(hNumPort, NULL, & statsread); //sprawdza status
+            ClearCommError(hNumPort, NULL, & statsread);
                 if(statsread.cbInQue != 0){
-                if(ReadFile(hNumPort, & tabr, 1, & RS_ile, 0)){
-                    //char buf[ 256 ]; // unsigned
-                    char buf[512];
-                    wsprintf(buf, "%d", tabr);
-                    endOfFile0 = true;
+                    if(ReadFile(hNumPort, & tabr, 1, & RS_ile, 0)){
+                        char buf[512];
+                        wsprintf(buf, "%d", tabr);
+                        endOfFile0 = true;
 
-                    if(endOfFile0 == true && endOfFile1 == true){
-                        plik.open("barcode001.txt", ios::out);
-                        plik<<"";
-                        plik.close();
-                        endOfFile0 = false;
-                        endOfFile1 = false;
+                        if(endOfFile0 == true && endOfFile1 == true){
+                            plik.open("barcode001.txt", ios::out);
+                            plik<<"";
+                            plik.close();
+                            endOfFile0 = false;
+                            endOfFile1 = false;
 
-                        showSN04 = showSN03;
-                        showSN03 = showSN02;
-                        showSN02 = showSN01;
-                        showSN01 = showSN;
+                            showSN04 = showSN03;
+                            showSN03 = showSN02;
+                            showSN02 = showSN01;
+                            showSN01 = showSN;
 
-                        time05 = time04;
-                        time04 = time03;
-                        time03 = time02;
-                        time02 = time01;
+                            time05 = time04;
+                            time04 = time03;
+                            time03 = time02;
+                            time02 = time01;
 
+                            logSave(showSN);
 
+                            showSN = "";
+                            flag01 = 0;
+                        }
 
-                        logSave(showSN);
-
-                        showSN = "";
-                        flag01 = 0;
-                    }
-                            //cout << "Dec "<< buf << endl; // add work
-                            //cout << "(int) "<< (int)buf << endl;
-
-                            //cout << endl;
-                            int res0 = strcmp(buf, "48");
+                        int res0 = strcmp(buf, "48");
                             if(res0 == 0){
                                 //MessageBox( NULL, "E", "Inf", MB_ICONINFORMATION );
                                 //cout << "0";
@@ -792,375 +783,301 @@ rect0[1].bottom = 330;
 
                         }
 
-            }else{
-                endOfFile1 = true;
-
-            if(flag01 == 0 ){
-                InvalidateRect(hWnd, &rect0[0], true);
-                //flag10 = 3;
-                flag01 = 1;
-
-//---------------Notification for pcb-------------
-
-//if(endOfFile0 == false){
-//if(endOfFile0 == true){
-//if( (strlen(showSN.c_str()) >  4) && flag01 == 0 ){
-/*
-if(endOfFile0 == true){
-    LPSTR sTip = "COM 10";
-    LPSTR sTytul = "Serial number"; //add
-    LPSTR sOpis = "time"; //add
-    NOTIFYICONDATA nid;
-
-    nid.cbSize = sizeof(NOTIFYICONDATA);
-    nid.hWnd = hWnd;
-    nid.uID = ID_TRAY1;
-    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP | NIF_INFO; // add NIF_INFO
-    nid.uCallbackMessage = CMSG_TRAY1;
-    nid.hIcon = LoadIcon(NULL, IDI_INFORMATION);
-    nid.dwInfoFlags = NIIF_INFO; // add
-    lstrcpy(nid.szTip, sTip);
-    lstrcpy( nid.szInfoTitle, sTytul ); //add
-    lstrcpy( nid.szInfo, sOpis ); //add
-    BOOL r;
-    r = Shell_NotifyIcon(NIM_ADD, & nid);
-    if(!r) MessageBox(hWnd, "No way, No icon...", "Leeee...", MB_ICONEXCLAMATION);
-}
-*/
-//-----------------------------------------------
-
-            }
-
-
-
-            }
-//-------------Current Barcode----------------
-if(flagBLExist == true){
-
-string fileStr = "barcodelist.bar";
-char * file = new char[ fileStr.size() + 1 ];
-strcpy(file, fileStr.c_str());
-        //cout << "file: " << filenameStr << '\n';
-        //char file[] = "C:\\XML\\EPSILON\\"+filenameStr;
-
-char t[100] = "";
-struct stat b;
-char tCurrent[100] = "";
-
-time_t czas00;
-time( & czas00 );
-strftime(tCurrent, 100, "%Y%m%d%H%M%S.000", localtime( & czas00 ));
-
-if(!stat(file, & b)){
-//strftime(t, 100, "%d%m%Y%H%M%S", localtime(& b.st_mtime));
-strftime(t, 100, "%Y%m%d%H%M%S.000", localtime(& b.st_mtime));
-int tInt = atoi(t);
-int tCurrentInt = atoi(tCurrent);
-//cout << tCurrentInt << " " << tInt << endl;
-//cout << tCurrentInt - tInt << endl;
-if((tCurrentInt == tInt) && flagSync == true){
-flagSync = false;
-InvalidateRect(hWnd, &rect0[1], true);
-flagBLExistDraw = true;
-//logSave("21:21:21", "test");
-//Sleep(500);
-}else{
-flagSync = true;
-}
-}
-
-}
-//-------------Current Barcode / the end------
-
-        }
-        break;
-    case WM_CREATE:
-        {
-            if( SetTimer( hWnd, ID_TIMER, 1, NULL ) == 0 )
-                 MessageBox( hWnd, "Some issue of timer!", "Err!", MB_ICONSTOP );
-
-            //static HINSTANCE hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE); <-- original
-            static HINSTANCE hInst = (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE);
-
-            static HWND hWndGroupbox = CreateWindowEx(
-                                        0,
-                                        "BUTTON",
-                                        "Communication",
-                                        WS_VISIBLE | WS_CHILD | BS_GROUPBOX,
-                                        10,
-                                        10,
-                                        215,
-                                        90,
-                                        hWnd,
-                                        NULL,
-                                        hInst,
-                                        NULL);
-            static HWND hWndGroupbox01 = CreateWindowEx(
-                                        0,
-                                        "BUTTON",
-                                        "Intercepted barcode",
-                                        WS_VISIBLE | WS_CHILD | BS_GROUPBOX,
-                                        10,
-                                        110,
-                                        215,
-                                        130,
-                                        hWnd,
-                                        NULL,
-                                        hInst,
-                                        NULL);
-            static HWND hWndGroupbox02 = CreateWindowEx(
-                                        0,
-                                        "BUTTON",
-                                        "Current barcode",
-                                        WS_VISIBLE | WS_CHILD | BS_GROUPBOX,
-                                        10,
-                                        250,
-                                        215,
-                                        90,
-                                        hWnd,
-                                        NULL,
-                                        hInst,
-                                        NULL);
-            static HWND hWndButton1 = CreateWindowEx(
-                                        0,
-                                        "BUTTON",
-                                        "Connect",
-                                        WS_VISIBLE | WS_CHILD,
-                                        20,
-                                        40,
-                                        90,
-                                        40,
-                                        hWnd,
-                                        (HMENU) IDB_BUTTON1,
-                                        hInst,
-                                        NULL);
-            static HWND hWndButton2 = CreateWindowEx(
-                                        0,
-                                        "BUTTON",
-                                        "Disconnect",
-                                        WS_VISIBLE | WS_CHILD,
-                                        125,
-                                        40,
-                                        90,
-                                        40,
-                                        hWnd,
-                                        (HMENU) IDB_BUTTON2,
-                                        hInst,
-                                        NULL);
-            static HWND hWndButton3 = CreateWindowEx(
-                                        0,
-                                        "BUTTON",
-                                        "Release PCB -->",
-                                        WS_VISIBLE | WS_CHILD,
-                                        25,
-                                        350,
-                                        190,
-                                        40,
-                                        hWnd,
-                                        (HMENU) IDB_BUTTON3,
-                                        hInst,
-                                        NULL);
-
-            rect.left = 10;
-            rect.top = 19;
-            rect.right = 220;
-            rect.bottom = 100;
-            flag = 1;
-
-            hNumPort = CreateFile("\\\\.\\COM10", GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-            dcb.DCBlength = sizeof(dcb);
-
-            //dcb.BaudRate = CBR_9600; // cognex
-            dcb.BaudRate = CBR_115200; // datalogic
-            dcb.fParity = FALSE;
-            dcb.Parity = NOPARITY;
-            //dcb.Parity = EVENPARITY;
-            dcb.StopBits = ONESTOPBIT;
-            dcb.ByteSize = 8;
-            dcb.fDtrControl = DTR_CONTROL_ENABLE;
-            dcb.fRtsControl = DTR_CONTROL_ENABLE;
-            dcb.fOutxCtsFlow = FALSE;
-            dcb.fOutxDsrFlow = FALSE;
-            dcb.fDsrSensitivity = FALSE;
-            dcb.fAbortOnError = FALSE;
-            dcb.fOutX = FALSE;
-            dcb.fInX = FALSE;
-            dcb.fErrorChar = FALSE;
-            dcb.fNull = FALSE;
-
-            if( SetCommState(hNumPort, & dcb)){
-                //MessageBox( NULL, "COM10", "Inf", MB_ICONINFORMATION );
-                //flag = 1;
-            }else{
-                MessageBox( NULL, "COM 10", "Disconnected", MB_ICONERROR );
-                flag = 2;
-            }
-
-        }
-        break;
-
-    case WM_COMMAND:
-        switch(LOWORD(wParam)){
-            case IDB_BUTTON1:
-                InvalidateRect(hWnd, &rect, FALSE);
-
-                //if(SetTimer( hWnd, ID_TIMER, 1, NULL ) == 0) // ??????????????????????
-                // MessageBox(hWnd, "Some issue of timer!", "Err!", MB_ICONSTOP); // ????????????????
-
-                hNumPort = CreateFile("\\\\.\\COM10", GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
-                dcb.DCBlength = sizeof(dcb);
-
-                //dcb.BaudRate = CBR_9600; // cognex
-                dcb.BaudRate = CBR_115200; // datalogic
-                dcb.fParity = FALSE;
-                dcb.Parity = NOPARITY;
-                //dcb.Parity = EVENPARITY;
-                dcb.StopBits = ONESTOPBIT;
-                dcb.ByteSize = 8;
-                dcb.fDtrControl = DTR_CONTROL_ENABLE;
-                dcb.fRtsControl = DTR_CONTROL_ENABLE;
-                dcb.fOutxCtsFlow = FALSE;
-                dcb.fOutxDsrFlow = FALSE;
-                dcb.fDsrSensitivity = FALSE;
-                dcb.fAbortOnError = FALSE;
-                dcb.fOutX = FALSE;
-                dcb.fInX = FALSE;
-                dcb.fErrorChar = FALSE;
-                dcb.fNull = FALSE;
-
-                if(SetCommState(hNumPort, & dcb)){
-                    flag = 1;
-                    MessageBox(NULL, "COM 10", "Connected", MB_ICONINFORMATION);
                 }else{
-                    flag = 2;
-                    MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
-                }
+                    endOfFile1 = true;
 
-            break;
-            case IDB_BUTTON2:
-                flag = 2;
-                InvalidateRect(hWnd, &rect, FALSE);
-                CloseHandle(hNumPort);
-
-                    MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
-            break;
-            case IDB_BUTTON3:
-
-                //killProcessByName("CalculatorApp.exe");
-                killProcessByName("BuyOffControl.exe");
-
-                fstream fileTemp;
-                fileTemp.open("C:\\Defects\\ComportSignal\\temp.txt", std::ios_base::out | std::ios::app);
-                    if(fileTemp.is_open()){
-                        fileTemp<<"temp"<<endl;
-                        fileTemp.close();
+                    if(flag01 == 0 ){
+                        InvalidateRect(hWnd, &rect0[0], true);
+                        flag01 = 1;
                     }
-                    fileTemp.close();
+                }
+//-------------Current Barcode----------------
+                if(flagBLExist == true){
+                    string fileStr = "barcodelist.bar";
+                    char * file = new char[ fileStr.size() + 1 ];
+                    strcpy(file, fileStr.c_str());
+                    char t[100] = "";
+                    struct stat b;
+                    char tCurrent[100] = "";
 
-            break;
+                    time_t czas00;
+                    time(& czas00);
+                    strftime(tCurrent, 100, "%Y%m%d%H%M%S.000", localtime(& czas00));
+
+                    if(!stat(file, & b)){
+                        strftime(t, 100, "%Y%m%d%H%M%S.000", localtime(& b.st_mtime));
+                        int tInt = atoi(t);
+                        int tCurrentInt = atoi(tCurrent);
+                        if((tCurrentInt == tInt) && flagSync == true){
+                            flagSync = false;
+                            InvalidateRect(hWnd, &rect0[1], true);
+                            flagBLExistDraw = true;
+                        }else{
+                            flagSync = true;
+                        }
+                    }
+                }
+//----------Current Barcode / The End------
+
         }
         break;
-    case WM_PAINT:
-        hdc = BeginPaint(hWnd, &ps);
-        Draw(hdc);
+        case WM_CREATE:
+            {
+                if(SetTimer( hWnd, ID_TIMER, 1, NULL ) == 0)
+                    MessageBox( hWnd, "Some issue of timer!", "Err!", MB_ICONSTOP );
+                    //static HINSTANCE hInst = (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE); <-- original
+                    static HINSTANCE hInst = (HINSTANCE)GetWindowLong(hWnd, GWLP_HINSTANCE);
 
+                    static HWND hWndGroupbox = CreateWindowEx(
+                                                0,
+                                                "BUTTON",
+                                                "Communication",
+                                                WS_VISIBLE | WS_CHILD | BS_GROUPBOX,
+                                                10,
+                                                10,
+                                                215,
+                                                90,
+                                                hWnd,
+                                                NULL,
+                                                hInst,
+                                                NULL);
+                    static HWND hWndGroupbox01 = CreateWindowEx(
+                                                0,
+                                                "BUTTON",
+                                                "Intercepted barcode",
+                                                WS_VISIBLE | WS_CHILD | BS_GROUPBOX,
+                                                10,
+                                                110,
+                                                215,
+                                                130,
+                                                hWnd,
+                                                NULL,
+                                                hInst,
+                                                NULL);
+                    static HWND hWndGroupbox02 = CreateWindowEx(
+                                                0,
+                                                "BUTTON",
+                                                "Current barcode",
+                                                WS_VISIBLE | WS_CHILD | BS_GROUPBOX,
+                                                10,
+                                                250,
+                                                215,
+                                                90,
+                                                hWnd,
+                                                NULL,
+                                                hInst,
+                                                NULL);
+                    static HWND hWndButton1 = CreateWindowEx(
+                                                0,
+                                                "BUTTON",
+                                                "Connect",
+                                                WS_VISIBLE | WS_CHILD,
+                                                20,
+                                                40,
+                                                90,
+                                                40,
+                                                hWnd,
+                                                (HMENU) IDB_BUTTON1,
+                                                hInst,
+                                                NULL);
+                    static HWND hWndButton2 = CreateWindowEx(
+                                                0,
+                                                "BUTTON",
+                                                "Disconnect",
+                                                WS_VISIBLE | WS_CHILD,
+                                                125,
+                                                40,
+                                                90,
+                                                40,
+                                                hWnd,
+                                                (HMENU) IDB_BUTTON2,
+                                                hInst,
+                                                NULL);
+                    static HWND hWndButton3 = CreateWindowEx(
+                                                0,
+                                                "BUTTON",
+                                                "Release PCB -->",
+                                                WS_VISIBLE | WS_CHILD,
+                                                25,
+                                                350,
+                                                190,
+                                                40,
+                                                hWnd,
+                                                (HMENU) IDB_BUTTON3,
+                                                hInst,
+                                                NULL);
 
+                    rect.left = 10;
+                    rect.top = 19;
+                    rect.right = 220;
+                    rect.bottom = 100;
+                    flag = 1;
 
-        SetBkMode(hdc, TRANSPARENT);
-        //TextOut(hdc, 15, 130, "1.", 2);
-        //InvalidateRect(hWnd, &rect0[0], FALSE);
+                    hNumPort = CreateFile("\\\\.\\COM10", GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+                    dcb.DCBlength = sizeof(dcb);
 
+                    //dcb.BaudRate = CBR_9600;
+                    dcb.BaudRate = CBR_115200;
+                    dcb.fParity = FALSE;
+                    dcb.Parity = NOPARITY;
+                    //dcb.Parity = EVENPARITY;
+                    dcb.StopBits = ONESTOPBIT;
+                    dcb.ByteSize = 8;
+                    dcb.fDtrControl = DTR_CONTROL_ENABLE;
+                    dcb.fRtsControl = DTR_CONTROL_ENABLE;
+                    dcb.fOutxCtsFlow = FALSE;
+                    dcb.fOutxDsrFlow = FALSE;
+                    dcb.fDsrSensitivity = FALSE;
+                    dcb.fAbortOnError = FALSE;
+                    dcb.fOutX = FALSE;
+                    dcb.fInX = FALSE;
+                    dcb.fErrorChar = FALSE;
+                    dcb.fNull = FALSE;
 
-        if(endOfFile0 == true){//ok true
-            //InvalidateRect(hWnd, &rect0[0], FALSE);
-           // Draw01(hdc);
-            TextOut(hdc, 90, 130, showSN.c_str(), strlen(showSN.c_str()));
-            TextOut(hdc, 90, 150, showSN01.c_str(), strlen(showSN01.c_str()));
-            TextOut(hdc, 90, 170, showSN02.c_str(), strlen(showSN02.c_str()));
-            TextOut(hdc, 90, 190, showSN03.c_str(), strlen(showSN03.c_str()));
-            TextOut(hdc, 90, 210, showSN04.c_str(), strlen(showSN04.c_str()));
-
-//            time05 = time04;
-//            time04 = time03;
-//            time03 = time02;
-//            time02 = time01;
-
-
-            SYSTEMTIME czas00;
-            char tab[32];
-            char tekst[128];
-
-            //SYSTEMTIME st;
-            GetLocalTime(&czas00);
-            if(czas00.wHour<10){
-                strcpy(tekst, "0");
-                itoa(czas00.wHour, tab, 10);
-                strcat(tekst, tab);
-            }else{
-                itoa(czas00.wHour, tekst, 10);
-            }
-            strcat(tekst, ":");
-            itoa(czas00.wMinute, tab, 10);
-            if(czas00.wMinute<10) strcat(tekst, "0");
-                strcat(tekst, tab);
-                itoa(czas00.wSecond, tab, 10);
-                strcat(tekst, ":");
-            if(czas00.wSecond<10) strcat(tekst, "0");
-                strcat(tekst, tab);
-                time01 = tekst;
-
-            TextOut(hdc, 20, 130, time01.c_str(), strlen(time01.c_str()));
-            TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
-            TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
-            TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
-            TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
-
+                    if(SetCommState(hNumPort, & dcb)){
+                        //MessageBox( NULL, "COM10", "Inf", MB_ICONINFORMATION );
+                        //flag = 1;
+                    }else{
+                        MessageBox( NULL, "COM 10", "Disconnected", MB_ICONERROR );
+                        flag = 2;
+                    }
         }
-        //Draw01(hdc);
-if(flagBLExistDraw == true){
-ifstream read01("barcodelist.bar");
-std::string rowStr = "";
-std::string rowStr01 = "";
-std::string rowStr02 = "";
-std::string rowStr03 = "";
-	if(read01.is_open()){
-		//char row[10000];//maksymalnie 9999 znakw w wierszu
-		while(!read01.eof()){
-                getline(read01,rowStr);
-                std::size_t found = rowStr.find("Barcode#1");
-                 if(found!=std::string::npos){
-                    rowStr01 = rowStr;
-                    rowStr01.erase(0,11);
-                 }
-                std::size_t found01 = rowStr.find("#Board:");
-                 if(found01!=std::string::npos){
-                    rowStr02 = rowStr;
-                    //rowStr02.erase(0,33);
-                    rowStr02.erase(rowStr02.begin()+0, rowStr02.end()-21); // it need to improvement
-                    rowStr03 = rowStr;
-                    rowStr03.erase(0,8);
-                    //rowStr03.erase(rowStr03.begin()+22, rowStr03.end());
-                    rowStr03.erase(rowStr03.find(','));
-                 }
-		}
-		read01.close();
-		TextOut(hdc, 20, 270, rowStr01.c_str(), strlen(rowStr01.c_str()));
-		TextOut(hdc, 20, 290, rowStr02.c_str(), strlen(rowStr02.c_str()));
-		TextOut(hdc, 20, 310, rowStr03.c_str(), strlen(rowStr03.c_str()));
-		//TextOut(hdc, 20, 150, rowStr01.c_str(), strlen(rowStr01[1].c_str()));
-	}
+        break;
 
-flagBLExistDraw = false;
-}
+        case WM_COMMAND:
+            switch(LOWORD(wParam)){
+                case IDB_BUTTON1:
+                    InvalidateRect(hWnd, &rect, FALSE);
+                    hNumPort = CreateFile("\\\\.\\COM10", GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, NULL);
+                    dcb.DCBlength = sizeof(dcb);
 
+                    //dcb.BaudRate = CBR_9600; // cognex
+                    dcb.BaudRate = CBR_115200; // datalogic
+                    dcb.fParity = FALSE;
+                    dcb.Parity = NOPARITY;
+                    //dcb.Parity = EVENPARITY;
+                    dcb.StopBits = ONESTOPBIT;
+                    dcb.ByteSize = 8;
+                    dcb.fDtrControl = DTR_CONTROL_ENABLE;
+                    dcb.fRtsControl = DTR_CONTROL_ENABLE;
+                    dcb.fOutxCtsFlow = FALSE;
+                    dcb.fOutxDsrFlow = FALSE;
+                    dcb.fDsrSensitivity = FALSE;
+                    dcb.fAbortOnError = FALSE;
+                    dcb.fOutX = FALSE;
+                    dcb.fInX = FALSE;
+                    dcb.fErrorChar = FALSE;
+                    dcb.fNull = FALSE;
 
+                    if(SetCommState(hNumPort, & dcb)){
+                        flag = 1;
+                        MessageBox(NULL, "COM 10", "Connected", MB_ICONINFORMATION);
+                    }else{
+                        flag = 2;
+                        MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
+                    }
+                break;
+                case IDB_BUTTON2:
+                    flag = 2;
+                    InvalidateRect(hWnd, &rect, FALSE);
+                    CloseHandle(hNumPort);
+                    MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
+                break;
+                case IDB_BUTTON3:
+                    //killProcessByName("CalculatorApp.exe");
+                    killProcessByName("BuyOffControl.exe");
 
+                    fstream fileTemp;
+                    fileTemp.open("C:\\Defects\\ComportSignal\\temp.txt", std::ios_base::out | std::ios::app);
+                        if(fileTemp.is_open()){
+                            fileTemp<<"temp"<<endl;
+                            fileTemp.close();
+                        }
+                    fileTemp.close();
+                break;
+        }
+        break;
+        case WM_PAINT:
+            hdc = BeginPaint(hWnd, &ps);
+            Draw(hdc);
+            SetBkMode(hdc, TRANSPARENT);
+
+            if(endOfFile0 == true){
+                TextOut(hdc, 90, 130, showSN.c_str(), strlen(showSN.c_str()));
+                TextOut(hdc, 90, 150, showSN01.c_str(), strlen(showSN01.c_str()));
+                TextOut(hdc, 90, 170, showSN02.c_str(), strlen(showSN02.c_str()));
+                TextOut(hdc, 90, 190, showSN03.c_str(), strlen(showSN03.c_str()));
+                TextOut(hdc, 90, 210, showSN04.c_str(), strlen(showSN04.c_str()));
+
+                SYSTEMTIME czas00;
+                char tab[32];
+                char tekst[128];
+
+                GetLocalTime(&czas00);
+
+                if(czas00.wHour<10){
+                    strcpy(tekst, "0");
+                    itoa(czas00.wHour, tab, 10);
+                    strcat(tekst, tab);
+                }else{
+                    itoa(czas00.wHour, tekst, 10);
+                }
+                strcat(tekst, ":");
+                itoa(czas00.wMinute, tab, 10);
+
+                if(czas00.wMinute<10) strcat(tekst, "0");
+                    strcat(tekst, tab);
+                    itoa(czas00.wSecond, tab, 10);
+                    strcat(tekst, ":");
+                if(czas00.wSecond<10) strcat(tekst, "0");
+                    strcat(tekst, tab);
+                    time01 = tekst;
+
+                TextOut(hdc, 20, 130, time01.c_str(), strlen(time01.c_str()));
+                TextOut(hdc, 20, 150, time02.c_str(), strlen(time02.c_str()));
+                TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
+                TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
+                TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
+            }
+
+            if(flagBLExistDraw == true){
+                ifstream read01("barcodelist.bar");
+                std::string rowStr = "";
+                std::string rowStr01 = "";
+                std::string rowStr02 = "";
+                std::string rowStr03 = "";
+
+                if(read01.is_open()){
+                    while(!read01.eof()){
+                        getline(read01,rowStr);
+                        std::size_t found = rowStr.find("Barcode#1");
+                        if(found!=std::string::npos){
+                            rowStr01 = rowStr;
+                            rowStr01.erase(0,11);
+                        }
+                        std::size_t found01 = rowStr.find("#Board:");
+                        if(found01!=std::string::npos){
+                            rowStr02 = rowStr;
+                            rowStr02.erase(rowStr02.begin()+0, rowStr02.end()-21); // it need to improvement
+                            rowStr03 = rowStr;
+                            rowStr03.erase(0,8);
+                            //rowStr03.erase(rowStr03.begin()+22, rowStr03.end());
+                            rowStr03.erase(rowStr03.find(','));
+                        }
+                    }
+                    read01.close();
+                    TextOut(hdc, 20, 270, rowStr01.c_str(), strlen(rowStr01.c_str()));
+                    TextOut(hdc, 20, 290, rowStr02.c_str(), strlen(rowStr02.c_str()));
+                    TextOut(hdc, 20, 310, rowStr03.c_str(), strlen(rowStr03.c_str()));
+                }
+                flagBLExistDraw = false;
+            }
         EndPaint(hWnd, &ps);
         break;
-    case WM_SIZE:
-    {
-        if(wParam == SIZE_MINIMIZED){
-            ShowWindow(hWnd, SW_HIDE);
+        case WM_SIZE:
+        {
+            if(wParam == SIZE_MINIMIZED){
+                ShowWindow(hWnd, SW_HIDE);
 
                 LPSTR sTip = "COM 10";
                 NOTIFYICONDATA nid;
@@ -1176,9 +1093,8 @@ flagBLExistDraw = false;
                 BOOL r;
                 r = Shell_NotifyIcon( NIM_ADD, & nid );
                 if(!r) MessageBox(hWnd, "No way, No icon...", "Leeee...", MB_ICONEXCLAMATION);
-
-        }else{
-            ShowWindow(hWnd, SW_SHOW);
+            }else{
+                ShowWindow(hWnd, SW_SHOW);
 
                 NOTIFYICONDATA nid;
                 nid.cbSize = sizeof(NOTIFYICONDATA);
@@ -1186,37 +1102,34 @@ flagBLExistDraw = false;
                 nid.uID = ID_TRAY1;
                 nid.uFlags = 0;
                 Shell_NotifyIcon(NIM_DELETE, & nid);
+            }
         }
-    }
-    break;
-    case CMSG_TRAY1:
-    {
-        switch(wParam){
-            case ID_TRAY1: // dla naszej ikonki
-                switch(LOWORD(lParam)){
-                    case NIN_BALLOONUSERCLICK: // gdy user kliknie balonik
-                        //MessageBox( hWnd, "Fajnie e klikne mj balonik.", ";-)", MB_ICONEXCLAMATION );
-                        ShowWindow(hWnd, SW_RESTORE);
-                    break;
-                    case NIN_BALLOONTIMEOUT: // gdy balonik zgaœnie samoczynnie
-                        //MessageBox( hWnd, "Dlaczego nie klikn mojego balonika, co ?!", ";-(", MB_ICONEXCLAMATION );
-                    break;
-                    case WM_LBUTTONDOWN:
-                        ShowWindow(hWnd, SW_RESTORE);
-                    break;
-                    default:
-                        //ShowWindow(hWnd, SW_RESTORE);
-                    break;
-                }
-            break;
+        break;
+        case CMSG_TRAY1:
+        {
+            switch(wParam){
+                case ID_TRAY1:
+                    switch(LOWORD(lParam)){
+                        case NIN_BALLOONUSERCLICK:
+                            //MessageBox( hWnd, "Fajnie e klikne mj balonik.", ";-)", MB_ICONEXCLAMATION );
+                            ShowWindow(hWnd, SW_RESTORE);
+                        break;
+                        case NIN_BALLOONTIMEOUT:
+                            //MessageBox( hWnd, "Dlaczego nie klikn mojego balonika, co ?!", ";-(", MB_ICONEXCLAMATION );
+                        break;
+                        case WM_LBUTTONDOWN:
+                            ShowWindow(hWnd, SW_RESTORE);
+                        break;
+                        default:
+                            //ShowWindow(hWnd, SW_RESTORE);
+                        break;
+                    }
+                break;
+            }
         }
-        //if(wParam == ID_TRAY1)
-        //if(lParam == WM_LBUTTONDOWN)
-        //   ShowWindow(hWnd, SW_RESTORE);
-    }
-    break;
+        break;
 
-    case WM_DESTROY:
+        case WM_DESTROY:
         {
             if(IsIconic(hWnd)){
                 NOTIFYICONDATA nid;
@@ -1231,14 +1144,13 @@ flagBLExistDraw = false;
                 return 0;
         }
         break;
-                case IDB_BUTTON2:
+        case IDB_BUTTON2:
                 flag = 2;
                 InvalidateRect(hWnd, &rect, FALSE);
                 CloseHandle(hNumPort);
 
-                    MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
-            break;
+                MessageBox(NULL, "COM 10", "Disconnected", MB_ICONERROR);
+        break;
     }
-
     return DefWindowProc( hWnd, msg, wParam, lParam );
 }
