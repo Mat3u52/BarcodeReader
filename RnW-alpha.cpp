@@ -37,6 +37,7 @@ int WinMain(HINSTANCE hInstance,
 
 //-----------Only one instance / the end------------------------------
     //char file[] = "SMEMASignal1.txt";
+    //char file[] = "C:\\cpi\\data\\currentBoardMode.txt";
     char file[] = "C:\\cpi\\data\\names.txt";
 
     char t[100] = "";
@@ -73,23 +74,23 @@ int WinMain(HINSTANCE hInstance,
     string dateTime = bufor;
     cout << dateTime << endl;
 
+    fstream handle;
+    string recipe;
 
-fstream handle;
-string recipe;
+    handle.open("C:\\cpi\\data\\names.txt");
+    //handle.open("names.txt"); // at home
 
-handle.open("C:\\cpi\\data\\names.txt");
-//handle.open("names.txt"); // at home
-
-if(handle.good()==false){
-    exit(0);
-}else{
-    getline(handle, recipe);
-}
-handle.close();
+    if(handle.good()==false){
+        exit(0);
+    }else{
+        getline(handle, recipe);
+    }
+    handle.close();
     int recipeL = recipe.length();
     recipe.erase(recipeL-4,4);
     recipe.erase(0,2);
     cout << recipe << endl;
+
 
 fstream handleB;
 string barcode;
@@ -108,37 +109,38 @@ cout << barcode << endl;
                 //Sleep(2000);
                 Sleep(500);
 
-if(barcode.length() > 6 && barcode.length() < 20){
+    if(barcode.length() > 6 && barcode.length() < 20){
 
-if(barcode.compare("NOREAD") != 0){
-    fstream plik;
-    plik.open("barcodelist.bar", ios::out);
-    plik<<"#Board: ";
-    plik<<recipe<<", ";
-    plik<<dateTime<<"\n";
-    plik<<"\n#Number Of Panel	Barcode\n";
-    plik<<"Barcode#1	*"<<barcode<<"\n";
-    plik<<"#End";
-    plik.close();
-}else{
-    fstream plik;
-    plik.open("barcodelist.bar", ios::out);
-    plik<<"#Board: ";
-    plik<<recipe<<", ";
-    plik<<dateTime<<"\n";
-    plik<<"\n#Number Of Panel	Barcode\n";
-    plik<<"Barcode#1	*Barcode0\n";
-    plik<<"#End";
-    plik.close();
-}
-                Sleep(500); // in work
+    if(barcode.compare("NOREAD") != 0){
+        fstream plik;
+        plik.open("barcodelist.bar", ios::out);
+        plik<<"#Board: ";
+        plik<<recipe<<", ";
+        plik<<dateTime<<"\n";
+        plik<<"\n#Number Of Panel	Barcode\n";
+        plik<<"Barcode#1	*"<<barcode<<"\n";
+        plik<<"#End";
+        plik.close();
+    }else{
+        fstream plik;
+        plik.open("barcodelist.bar", ios::out);
+        plik<<"#Board: ";
+        plik<<recipe<<", ";
+        plik<<dateTime<<"\n";
+        plik<<"\n#Number Of Panel	Barcode\n";
+        plik<<"Barcode#1	*Barcode0\n";
+        plik<<"#End";
+        plik.close();
+    }
+
+    Sleep(500); // in work
                 //Sleep(1000); // in work
                 //Sleep(20000);
-}else{
-killProcessByName("Mondelbrot.exe");
-Sleep(5000);
-ShellExecute(NULL, "open", "Mandelbrot.exe", NULL, NULL, 0);
-}
+    }else{
+        killProcessByName("Mondelbrot.exe");
+        Sleep(5000);
+        ShellExecute(NULL, "open", "Mandelbrot.exe", NULL, NULL, 0);
+    }
 //----Start clear barcode001 file
 fstream clearFile;
 clearFile.open("barcode001.txt", ios::out);
@@ -146,6 +148,61 @@ clearFile<<"NOREAD";
 clearFile.close();
 //----The end clesr file
 
+    for(;;){
+        Sleep(5000);
+        fstream handleRep;
+        string recipeRep;
+
+        handleRep.open("C:\\cpi\\data\\names.txt");
+        //handle.open("names.txt"); // at home
+
+        if(handleRep.good()==false){
+            exit(0);
+        }else{
+            getline(handleRep, recipeRep);
+        }
+        handleRep.close();
+        int recipeL = recipeRep.length();
+        recipeRep.erase(recipeL-4,4);
+        recipeRep.erase(0,2);
+        cout << recipeRep << endl;
+        Sleep(500);
+        //if(recipe != recipeRep){
+        if(recipe.compare(recipeRep) > 0){
+            char bufor0[ 64 ];
+            time_t czas11;
+            time( & czas11 );
+            tm czasTM1 = * localtime( & czas11 );
+
+            setlocale( LC_ALL, "English" );
+            strftime( bufor0, sizeof( bufor0 ), "%c", & czasTM1 );
+
+            string dateTime0 = bufor0;
+
+            if(barcode.compare("NOREAD") != 0){
+            fstream plik;
+            plik.open("barcodelist.bar", ios::out);
+            plik<<"#Board: ";
+            plik<<recipeRep<<", ";
+            plik<<dateTime0<<"\n";
+            plik<<"\n#Number Of Panel	Barcode\n";
+            plik<<"Barcode#1	*"<<barcode<<"\n";
+            plik<<"#End";
+            plik.close();
+            }else{
+            fstream plik;
+            plik.open("barcodelist.bar", ios::out);
+            plik<<"#Board: ";
+            plik<<recipeRep<<", ";
+            plik<<dateTime0<<"\n";
+            plik<<"\n#Number Of Panel	Barcode\n";
+            plik<<"Barcode#1	*Barcode0\n";
+            plik<<"#End";
+            plik.close();
+            }
+            break;
+        }
+    }
             }
         }else{
             printf("Lack of the source to file. \n");
