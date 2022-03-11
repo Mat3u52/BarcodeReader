@@ -3,3 +3,4 @@ BarcodeReader capture the decimal from 48 to 122 in ASCII table standard sent fr
 
 How it works.
 -The scanner before AOI reads the barcode from the PCB.
+-The app capture the stream in the COM 10
