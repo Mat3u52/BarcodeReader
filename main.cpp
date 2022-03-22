@@ -119,7 +119,7 @@ int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
 
     HWND hWnd = CreateWindowEx(NULL,
     "Window Class",
-    "COM 10",
+    "BarcodeReader",
     //WS_OVERLAPPEDWINDOW,
     WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
     200,
