@@ -18,6 +18,7 @@ namespace fs = filesystem;
 
 void killProcessByName(const char *filename);
 bool pathValidator(string &pathToValid);
+void initializer();
 
 int main(){
     bool flagRename = "false";
@@ -47,10 +48,11 @@ int main(){
             }
         }
     }
-    string pathToFile0 = "C:\\Defects\\BuyOffControl.exe";
-    if(pathValidator(pathToFile0) == true){
-        fs::rename("C:\\Defects\\BuyOffControl.exe", "C:\\Defects\\BuyOffControl1.exe");
-    }
+    //string pathToFile0 = "C:\\Defects\\BuyOffControl.exe";
+    //if(pathValidator(pathToFile0) == true){
+    //    fs::rename("C:\\Defects\\BuyOffControl.exe", "C:\\Defects\\BuyOffControl1.exe");
+    //}
+    initializer();
 //-----------------The End initialize-------------------------------
 
     for(;;){
@@ -222,4 +224,22 @@ bool pathValidator(string &pathToValid){
     }
 
     return false;
+}
+
+void initializer(){
+    killProcessByName("BuyOffControl.exe");
+    Sleep(500);
+    string pathBOC1 = "C:\\Defects\\BuyOffControl1.exe";
+    string pathBOC2 = "C:\\Defects\\BuyOffControl.exe";
+    string pathS = "C:\\Program Files\\DefectPackager\\BuyOffControl.exe";
+    string pathD = "C:\\Defects\\BuyOffControl1.exe";
+        if(pathValidator(pathBOC1) == true){
+            fs::remove("C:\\Defects\\BuyOffControl1.exe");
+            Sleep(500);
+        }
+        if(pathValidator(pathBOC2) == true){
+            fs::remove("C:\\Defects\\BuyOffControl.exe");
+            Sleep(500);
+        }
+    fs::copy(pathS, pathD, fs::copy_options::recursive);
 }
