@@ -11,12 +11,12 @@ FILETYPE VFT_APP{
         BLOCK "041504E4"{
             VALUE "CompanyName", "Mateusz Kolodziej"
             VALUE "FileVersion", "2.0"
-            VALUE "FileDescription", "COM 10"
-            VALUE "InternalName", "COM10.exe"
+            VALUE "FileDescription", "BarcodeReader"
+            VALUE "InternalName", "BarcodeReader.exe"
             VALUE "LegalCopyright", "(C) Copyright by Mateusz Kolodziej"
             VALUE "LegalTrademarks", ""
-            VALUE "OriginalFilename", "COM10.exe"
-            VALUE "ProductName", "COM 10"
+            VALUE "OriginalFilename", "BarcodeReader.exe"
+            VALUE "ProductName", "BarcodeReader"
             VALUE "ProductVersion", "2.0"
             VALUE "ProductName", PRODUCT_NAME
         }
