@@ -140,7 +140,7 @@ int WINAPI WinMain( HINSTANCE hTInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
     }
 
 //----Tray------------------------------------------------
-    LPSTR sTip = "COM 10";
+    LPSTR sTip = "BarcodeReader";
     LPSTR sTytul = "Communications Port (COM10)";
     LPSTR sOpis = "I am ready to intercept.";
     NOTIFYICONDATA nid;
@@ -1038,6 +1038,7 @@ rect0[1].bottom = 330;
                 TextOut(hdc, 20, 170, time03.c_str(), strlen(time03.c_str()));
                 TextOut(hdc, 20, 190, time04.c_str(), strlen(time04.c_str()));
                 TextOut(hdc, 20, 210, time05.c_str(), strlen(time05.c_str()));
+
             }
 
             if(flagBLExistDraw == true){
@@ -1079,7 +1080,7 @@ rect0[1].bottom = 330;
             if(wParam == SIZE_MINIMIZED){
                 ShowWindow(hWnd, SW_HIDE);
 
-                LPSTR sTip = "COM 10";
+                LPSTR sTip = "BarcodeReader";
                 NOTIFYICONDATA nid;
 
                 nid.cbSize = sizeof(NOTIFYICONDATA);
@@ -1095,6 +1096,8 @@ rect0[1].bottom = 330;
                 if(!r) MessageBox(hWnd, "No way, No icon...", "Leeee...", MB_ICONEXCLAMATION);
             }else{
                 ShowWindow(hWnd, SW_SHOW);
+                InvalidateRect(hWnd, &rect0[1], true);
+                flagBLExistDraw = true;
 
                 NOTIFYICONDATA nid;
                 nid.cbSize = sizeof(NOTIFYICONDATA);
@@ -1104,6 +1107,10 @@ rect0[1].bottom = 330;
                 Shell_NotifyIcon(NIM_DELETE, & nid);
             }
         }
+        break;
+        case WM_MOVE:
+            InvalidateRect(hWnd, &rect0[1], true);
+            flagBLExistDraw = true;
         break;
         case CMSG_TRAY1:
         {
