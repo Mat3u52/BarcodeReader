@@ -7,3 +7,5 @@ How it works.
 - Dec code is converting to char and written to file .txt and save the timestamp in log file,
 - Other app "RnW" waiting for until PCB enter to the AOI then take the barcode from txt file and deliver it to the GUI AOI,
 - "RnW" also waiting for information from verification station that results had verified. If yes, it gives a signal to the machine to scan next PCB;
+
+I apologize for the condition of my code. I am just a newbie and the app has only draft form for the moment.
